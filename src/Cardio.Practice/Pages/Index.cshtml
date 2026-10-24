@@ -1,0 +1,226 @@
+@page
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cardiology Practice</title>
+  <link rel="stylesheet" href="/site.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Cardiology Practice</h1>
+  <p>Doctor and staff workspace</p>
+</header>
+
+<p id="notice" role="status"></p>
+
+<form id="login">
+  <h2>Sign in</h2>
+  <label>
+    Email
+    <input name="email" type="email" required>
+  </label>
+  <label>
+    Password
+    <input name="password" type="password"
+           required autocomplete="current-password">
+  </label>
+  <button>Sign in</button>
+</form>
+
+<main id="workspace" hidden>
+  <button id="logout" type="button">Sign out</button>
+
+  <label>
+    Active patient
+    <select id="patient"></select>
+  </label>
+
+  <details open data-role="Office">
+    <summary>Register a patient</summary>
+    <form id="newPatient">
+      <label>Full name<input name="name" required maxlength="160"></label>
+      <label>Birth date<input name="birthDate" type="date" required></label>
+      <label>Telephone<input name="phone" required maxlength="40"></label>
+      <button>Create patient</button>
+    </form>
+  </details>
+
+  <details data-role="Doctor">
+    <summary>Offer an appointment slot</summary>
+    <form id="newSlot">
+      <p>Enter times in this computer's local time zone.</p>
+      <label>Start<input name="start" type="datetime-local" required></label>
+      <label>End<input name="end" type="datetime-local" required></label>
+      <label>
+        Room or device code, if reserved
+        <input name="resourceKey" maxlength="80">
+      </label>
+      <button>Offer slot</button>
+    </form>
+  </details>
+
+  <details open>
+    <summary>Appointments</summary>
+    <button id="refresh" type="button">Refresh</button>
+    <h3>Available slots</h3>
+    <div id="slots"></div>
+    <h3>Recent appointments</h3>
+    <div id="appointments"></div>
+  </details>
+
+  <details data-role="Care">
+    <summary>Medical record</summary>
+    <form id="newEntry">
+      <label>
+        Type
+        <select name="kind">
+          <option>History</option>
+          <option>Allergy</option>
+          <option>Medication</option>
+          <option>Observation</option>
+          <option>Laboratory</option>
+          <option>Examination</option>
+        </select>
+      </label>
+      <label>Title<input name="title" required maxlength="160"></label>
+      <label>
+        Details
+        <textarea name="content" required maxlength="8000"></textarea>
+      </label>
+      <label>
+        Numeric value, optional
+        <input name="value" type="number" step="any">
+      </label>
+      <label>Unit for numeric value<input name="unit" maxlength="30"></label>
+      <button>Add dated entry</button>
+    </form>
+
+    <div id="entries"></div>
+
+    <form id="bmi">
+      <h3>BMI</h3>
+      <label>
+        Weight in kg
+        <input name="weightKg" type="number" step="any" required>
+      </label>
+      <label>
+        Height in cm
+        <input name="heightCm" type="number" step="any" required>
+      </label>
+      <button>Calculate</button>
+    </form>
+  </details>
+
+  <details data-role="Doctor">
+    <summary>Consultations</summary>
+    <form id="newNote">
+      <label>
+        Consultation note
+        <textarea name="note" required maxlength="16000"></textarea>
+      </label>
+      <button>Save draft</button>
+    </form>
+    <div id="notes"></div>
+  </details>
+
+  <details data-role="Care">
+    <summary>Prescriptions and certificates</summary>
+    <form id="newDocument" data-role="Doctor">
+      <label>
+        Document
+        <select name="kind">
+          <option>Prescription</option>
+          <option>Certificate</option>
+          <option>Referral</option>
+        </select>
+      </label>
+      <label>
+        Certificate, referral or additional instructions
+        <textarea name="body" maxlength="8000"></textarea>
+      </label>
+      <label>
+        Medicine and strength, for prescriptions
+        <input name="medicine" maxlength="160">
+      </label>
+      <label>
+        Dose, route, frequency and duration
+        <textarea name="instructions" maxlength="1000"></textarea>
+      </label>
+      <label>
+        Quantity
+        <input name="quantity" type="number" min="1" value="1">
+      </label>
+      <button>Prepare draft</button>
+    </form>
+    <div id="documents"></div>
+  </details>
+
+  <details data-role="Office">
+    <summary>Billing</summary>
+    <form id="newInvoice">
+      <label>Service<input name="description" required maxlength="300"></label>
+      <label>
+        Amount
+        <input name="total" type="number" step="0.01" min="0.01" required>
+      </label>
+      <label>
+        Currency
+        <input name="currency" value="DZD" pattern="[A-Z]{3}" required>
+      </label>
+      <button>Create invoice</button>
+    </form>
+
+    <div id="invoices"></div>
+
+    <form id="newPayment">
+      <label>Invoice<select name="invoiceId" id="invoice"></select></label>
+      <label>
+        Amount received
+        <input name="amount" type="number" step="0.01" min="0.01" required>
+      </label>
+      <label>
+        Method
+        <select name="method">
+          <option>Cash</option>
+          <option>Card</option>
+          <option>Transfer</option>
+        </select>
+      </label>
+      <button>Record received payment</button>
+    </form>
+  </details>
+
+  <details>
+    <summary>Administrative messages</summary>
+    <p>
+      For appointment and reception questions.
+      This is not an emergency service.
+    </p>
+    <form id="newMessage">
+      <label>
+        Message
+        <textarea name="body" required maxlength="4000"></textarea>
+      </label>
+      <button>Send to this patient's account</button>
+    </form>
+    <div id="messages"></div>
+  </details>
+
+  <details data-role="Care">
+    <summary>Attached reports</summary>
+    <p>Development uploads only. Review and scan files before release.</p>
+    <form id="newFile">
+      <label>
+        PDF report
+        <input name="file" type="file" accept="application/pdf" required>
+      </label>
+      <button>Attach PDF</button>
+    </form>
+    <div id="files"></div>
+  </details>
+</main>
+</body>
+</html>

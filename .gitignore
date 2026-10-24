@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+**/PrivateData/
+.env
+*.user
+*.suo
+.tools/
+**/appsettings.Development.json
+*.log
+.vs/
+**/bin/
+**/obj/
